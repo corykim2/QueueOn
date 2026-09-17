@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: queueon-mysql
+    restart: always                          # 죽으면 자동 재시작
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}   # .env에서 값 가져옴
+      MYSQL_DATABASE: ${MYSQL_DATABASE}             # queueon DB 자동 생성
+      MYSQL_USER: ${MYSQL_USER}                     # 앱 전용 사용자
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}             # 앱 전용 비번
+    ports:
+      - "${MYSQL_PORT}:3306"                 # 로컬 포트(.env)
+    volumes:
+      - mysql-data:/var/lib/mysql            # 데이터 영구 보관 (컨테이너 지워도 유지)
+
+  redis:
+    image: redis:7.0
+    container_name: queueon-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT}:6379"                 # 로컬 포트(.env)
+
+volumes:
+  mysql-data:                                # 위에서 쓴 볼륨 실제 등록
+
+# docker-compose up -d     : 실행 (백그라운드)
+# docker-compose down      : 중지 (데이터 유지)
+# docker-compose down -v   : 중지 + 볼륨 삭제 (DB 초기화)
