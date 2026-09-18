@@ -1,15 +1,22 @@
 package com.corykim2.queueon.domain.show.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Table(name = "shows")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor(access = PRIVATE)
+@Builder
 public class Show {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // 자동 증가

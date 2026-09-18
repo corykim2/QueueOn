@@ -1,0 +1,7 @@
+package com.corykim2.queueon.domain.schedule.repository;
+
+import com.corykim2.queueon.domain.schedule.entity.Schedule;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+}

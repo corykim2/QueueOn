@@ -1,0 +1,12 @@
+POST http://localhost:8080/api/admin/shows
+Content-Type: application/json
+
+{
+  "name": "공연 이름",
+  "seatCount": 100,
+  "bookingOpenAt": "2026-09-25T20:00:00",
+  "schedules": [
+    "2026-10-01T19:00:00",
+    "2026-10-02T19:00:00"
+  ]
+}
