@@ -3,6 +3,7 @@ package com.corykim2.queueon.domain.show.service;
 import com.corykim2.queueon.domain.schedule.entity.Schedule;
 import com.corykim2.queueon.domain.schedule.repository.ScheduleRepository;
 import com.corykim2.queueon.domain.show.dto.ShowCreateRequest;
+import com.corykim2.queueon.domain.show.dto.ShowUpdateRequest;
 import com.corykim2.queueon.domain.show.entity.Show;
 import com.corykim2.queueon.domain.show.repository.ShowRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,18 @@ public class ShowService {
 
         // 4. 만들어진 공연 id 반환
         return savedShow.getId();
+    }
+
+    @Transactional
+    public Long updateShow(Long showId, ShowUpdateRequest request){
+        // 1. 수정할 공연 찾기 (없으면 예외)
+        Show show = showRepository.findById(showId)
+                .orElseThrow(() -> new IllegalArgumentException("공연을 찾을 수 없습니다"));
+
+        // 2. 값 변경
+        show.update(request.getName(), request.getSeatCount(), request.getBookingOpenAt());
+
+        // 3. id 반환
+        return show.getId();
     }
 }

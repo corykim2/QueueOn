@@ -39,4 +39,11 @@ public class Show {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;         // 수정일
+
+    public void update(String name, int seatCount, LocalDateTime bookingOpenAt) {
+        this.name = name;
+        this.seatCount = seatCount;
+        this.bookingOpenAt = bookingOpenAt;
+        this.updatedAt = LocalDateTime.now();   // 수정일 갱신
+    }
 }
