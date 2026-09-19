@@ -58,4 +58,12 @@ public class ShowService {
         // 3. id 반환
         return show.getId();
     }
+
+    @Transactional
+    public void deleteShow(Long showId) {
+        Show show = showRepository.findById(showId)
+                .orElseThrow(() -> new IllegalArgumentException("공연을 찾을 수 없습니다"));
+
+        show.softDelete();
+    }
 }

@@ -35,6 +35,9 @@ public class Show {
     private boolean isBookable = false;       // 예매 가능 플래그 (기본 false)
 
     @Column(nullable = false)
+    private boolean isDeleted = false;    // 삭제 표시 (기본 false)
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;         // 생성일
 
     @Column(nullable = false)
@@ -45,5 +48,10 @@ public class Show {
         this.seatCount = seatCount;
         this.bookingOpenAt = bookingOpenAt;
         this.updatedAt = LocalDateTime.now();   // 수정일 갱신
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
+        this.updatedAt = LocalDateTime.now();
     }
 }

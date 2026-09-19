@@ -28,4 +28,10 @@ public class ShowController {
         Long updatedId = showService.updateShow(showId, request);
         return ResponseEntity.ok(updatedId);
     }
+
+    @DeleteMapping("/{showId}")
+    public ResponseEntity<Void> deleteShow(@PathVariable Long showId) {
+        showService.deleteShow(showId);
+        return ResponseEntity.noContent().build();  // 204
+    }
 }

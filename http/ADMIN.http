@@ -18,3 +18,6 @@ Content-Type: application/json
   "seatCount": 120,
   "bookingOpenAt": "2026-09-26T20:00:00"
 }
+
+### 공연 삭제 (ADMIN-03)
+DELETE http://localhost:8080/api/admin/shows/1
