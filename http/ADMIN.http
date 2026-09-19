@@ -21,3 +21,6 @@ Content-Type: application/json
 
 ### 공연 삭제 (ADMIN-03)
 DELETE http://localhost:8080/api/admin/shows/1
+
+### 공연 목록 조회 (ADMIN-04)
+GET http://localhost:8080/api/admin/shows

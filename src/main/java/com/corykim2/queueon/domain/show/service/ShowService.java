@@ -3,6 +3,7 @@ package com.corykim2.queueon.domain.show.service;
 import com.corykim2.queueon.domain.schedule.entity.Schedule;
 import com.corykim2.queueon.domain.schedule.repository.ScheduleRepository;
 import com.corykim2.queueon.domain.show.dto.ShowCreateRequest;
+import com.corykim2.queueon.domain.show.dto.ShowResponse;
 import com.corykim2.queueon.domain.show.dto.ShowUpdateRequest;
 import com.corykim2.queueon.domain.show.entity.Show;
 import com.corykim2.queueon.domain.show.repository.ShowRepository;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -65,5 +68,15 @@ public class ShowService {
                 .orElseThrow(() -> new IllegalArgumentException("공연을 찾을 수 없습니다"));
 
         show.softDelete();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShowResponse> getShows() {
+        return showRepository.findByIsDeletedFalse()   // 삭제 안 된 것 조회
+                .stream()
+                .map(ShowResponse::from)                // 각 Show를 DTO로 변환
+                //.map(show -> ShowResponse.from(show))  이거랑 같음
+                .toList();
+        //이거 이렇게 만들지 않고, for each 써도 똑같은데 이러면 좀 짧아져서 편함
     }
 }

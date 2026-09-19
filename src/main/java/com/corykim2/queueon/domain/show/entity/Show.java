@@ -1,5 +1,6 @@
 package com.corykim2.queueon.domain.show.entity;
 
+import com.corykim2.queueon.domain.schedule.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
@@ -42,6 +45,9 @@ public class Show {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;         // 수정일
+
+    @OneToMany(mappedBy = "show")
+    private List<Schedule> schedules = new ArrayList<>();
 
     public void update(String name, int seatCount, LocalDateTime bookingOpenAt) {
         this.name = name;
