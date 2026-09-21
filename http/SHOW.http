@@ -1,5 +1,16 @@
-### 첫 페이지
+### 첫 페이지 (SHOW-01)
 GET http://localhost:8080/api/shows
 
-### 다음 페이지 (위 응답 nextCursor 값 넣기)
+### 다음 페이지 (SHOW-01)
+//위 응답 nextCursor 값 넣기
 GET http://localhost:8080/api/shows?cursor=3
+
+### 정상 상세 조회 (SHOW-02)
+GET http://localhost:8080/api/shows/3
+
+### 삭제된 공연 (SHOW-02)
+//soft delete 된 id
+GET http://localhost:8080/api/shows/2
+
+### 없는 id (SHOW-02)
+GET http://localhost:8080/api/shows/99999

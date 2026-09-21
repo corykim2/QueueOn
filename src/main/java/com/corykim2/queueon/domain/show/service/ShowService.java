@@ -113,4 +113,13 @@ public class ShowService {
         // 6. 응답 조립
         return new ShowCursorResponse(shows, nextCursor, hasNext);
     }
+
+    //SHOW-02
+    @Transactional(readOnly = true)
+    public ShowDetailResponse getShow(Long showId) {
+        Show show = showRepository.findWithSchedulesByIdAndIsDeletedFalse(showId)
+                .orElseThrow(() -> new IllegalArgumentException("공연을 찾을 수 없습니다."));
+
+        return ShowDetailResponse.from(show);
+    }
 }
