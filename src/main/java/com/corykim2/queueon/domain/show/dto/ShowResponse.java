@@ -13,7 +13,7 @@ public class ShowResponse {
     private String name;
     private int seatCount;
     private LocalDateTime bookingOpenAt;
-    private boolean isBookable;
+    private boolean bookable;
 
     public static ShowResponse from(Show show) {
         return ShowResponse.builder()
@@ -21,7 +21,7 @@ public class ShowResponse {
                 .name(show.getName())
                 .seatCount(show.getSeatCount())
                 .bookingOpenAt(show.getBookingOpenAt())
-                .isBookable(show.isBookable())
+                .bookable(show.isBookable())
                 .build();
     }
 }

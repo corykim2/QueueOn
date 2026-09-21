@@ -2,32 +2,32 @@ package com.corykim2.queueon.domain.show.dto;
 
 import com.corykim2.queueon.domain.schedule.dto.ScheduleResponse;
 import com.corykim2.queueon.domain.show.entity.Show;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Builder
 public class AdminShowResponse {
     private Long id;
     private String name;
     private int seatCount;
     private LocalDateTime bookingOpenAt;
-    private boolean isBookable;
+    private boolean bookable;
     private List<ScheduleResponse> schedules;
 
-    // 엔티티 → DTO 변환
     public static AdminShowResponse from(Show show) {
-        AdminShowResponse response = new AdminShowResponse();
-        response.id = show.getId();
-        response.name = show.getName();
-        response.seatCount = show.getSeatCount();
-        response.bookingOpenAt = show.getBookingOpenAt();
-        response.isBookable = show.isBookable();
-        response.schedules = show.getSchedules()
-                .stream()
-                .map(ScheduleResponse::from)
-                .toList();
-        return response;
+        return AdminShowResponse.builder()
+                .id(show.getId())
+                .name(show.getName())
+                .seatCount(show.getSeatCount())
+                .bookingOpenAt(show.getBookingOpenAt())
+                .bookable(show.isBookable())
+                .schedules(show.getSchedules().stream()
+                        .map(ScheduleResponse::from)
+                        .toList())
+                .build();
     }
 }
