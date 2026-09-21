@@ -1,0 +1,5 @@
+### 첫 페이지
+GET http://localhost:8080/api/shows
+
+### 다음 페이지 (위 응답 nextCursor 값 넣기)
+GET http://localhost:8080/api/shows?cursor=3
