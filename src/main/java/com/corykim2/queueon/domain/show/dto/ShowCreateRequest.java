@@ -4,6 +4,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+//ADMIN-01
 @Getter
 public class ShowCreateRequest {
     private String name;              // 공연 이름

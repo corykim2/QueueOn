@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+//ADMIN-04
 @Getter
 public class ScheduleResponse {
     private Long id;

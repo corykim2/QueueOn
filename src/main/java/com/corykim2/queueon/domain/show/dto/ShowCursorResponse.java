@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
+//SHOW-01
 @Getter
 @AllArgsConstructor
 public class ShowCursorResponse {
