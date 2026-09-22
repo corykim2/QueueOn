@@ -1,0 +1,15 @@
+### 좌석 배치 조회 - 정상 (RESV-01)
+// 처음엔 blockedSeats: [] (아무도 안 막음)
+GET http://localhost:8080/api/schedules/1/seats
+
+### 좌석 배치 조회 - 막힌 좌석 확인 (RESV-01)
+// 아래를 redis-cli에서 먼저 실행하고 위 요청 다시 호출:
+//   docker exec -it queueon-redis redis-cli
+//   SADD blocked:1 3
+//   SADD blocked:1 5
+// → blockedSeats: [3, 5] (Set이라 순서는 바뀔 수 있음)
+GET http://localhost:8080/api/schedules/1/seats
+
+### 좌석 배치 조회 - 없는 회차 (RESV-01)
+// 현재는 500 (전역 예외처리 도입 전). 도입 후 404 예정
+GET http://localhost:8080/api/schedules/99999/seats
