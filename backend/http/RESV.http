@@ -13,3 +13,15 @@ GET http://localhost:8080/api/schedules/1/seats
 ### 좌석 배치 조회 - 없는 회차 (RESV-01)
 // 현재는 500 (전역 예외처리 도입 전). 도입 후 404 예정
 GET http://localhost:8080/api/schedules/99999/seats
+
+
+### 좌석 선점 - 성공 (RESV-02)
+POST http://localhost:8080/api/schedules/1/seats/3/hold
+X-User-Id: 1
+
+### 좌석 선점 - 이미 선점됨 (RESV-02)
+// 위를 한 번 더 보내거나, 다른 유저로:
+POST http://localhost:8080/api/schedules/1/seats/3/hold
+X-User-Id: 2
+// → 첫 번째 201, 두 번째 409 나오면 성공!
+// TTL hold:1:3 이걸로 ttl 체크도 가능
