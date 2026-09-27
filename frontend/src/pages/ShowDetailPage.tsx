@@ -50,7 +50,11 @@ function ShowDetailPage() {
       <h2>회차</h2>
       <ul>
         {show.schedules.map((schedule) => (
-          <li key={schedule.id}>{schedule.performanceDate}</li>
+          <li key={schedule.id}>
+            <Link to={`/schedules/${schedule.id}/seats`}>
+              {schedule.performanceDate} — 좌석 선택
+            </Link>
+          </li>
         ))}
       </ul>
     </div>

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import ShowListPage from './pages/ShowListPage'
 import ShowDetailPage from './pages/ShowDetailPage'
+import SeatPage from './pages/SeatPage'
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         {/* URL이 "/" 면 → ShowListPage 보여줘 */}
         <Route path="/shows/:showId" element={<ShowDetailPage />} />
         {/* URL이 "/shows/무언가" 면 → ShowDetailPage 보여줘 */}
+        <Route path="/schedules/:scheduleId/seats" element={<SeatPage />} />
       </Routes>
     </BrowserRouter>
   )
