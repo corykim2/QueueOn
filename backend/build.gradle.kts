@@ -35,6 +35,7 @@ dependencies {
     // .env 자동으로 읽게
     implementation(platform("me.paulschwarz:spring-dotenv-bom:5.1.0"))
     developmentOnly("me.paulschwarz:springboot4-dotenv")
+    testRuntimeOnly("me.paulschwarz:springboot4-dotenv")
 }
 
 tasks.withType<Test> {
