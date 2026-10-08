@@ -6,8 +6,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+// 나중에 soft delete 추가하게 되면 새로 테이블 하나 만들어서 삭제하면 옮기는 방식으로 구현
 @Entity
-@Table(name = "reservations")
+@Table(
+        name = "reservations",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_reservation_schedule_seat",
+                columnNames = {"schedule_id", "seat_number"}
+        )
+)
 @Getter
 @NoArgsConstructor
 public class Reservation {
