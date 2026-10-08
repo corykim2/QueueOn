@@ -3,6 +3,7 @@ package com.corykim2.queueon.global.util;
 
 // key 생성은 한곳에 모으기
 public class RedisKeys {
+    public static final String CONFIRMED = "CONFIRMED";
     private RedisKeys() {} // 인스턴스 못 만들게 (유틸 클래스)
 
     //RESV-01
