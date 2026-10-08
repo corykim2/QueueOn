@@ -6,6 +6,7 @@ import com.corykim2.queueon.domain.schedule.repository.ScheduleRepository;
 import com.corykim2.queueon.global.util.RedisKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,9 @@ import java.util.Set;
 public class ReservationService {
     private final ScheduleRepository scheduleRepository;
     private final StringRedisTemplate redisTemplate;
+    private final RedisScript<Long> holdSeatScript; //Lua
+
+    private static final long HOLD_TTL_SECONDS = 600; //TTL
 
     //RESV-01
     public SeatLayoutResponse getSeatLayout(Long scheduleId) {
@@ -55,16 +59,17 @@ public class ReservationService {
             throw new IllegalArgumentException("잘못된 좌석 번호");
         }
 
-        // 3) 선점 redis에 넣기
-        Boolean result = redisTemplate.opsForValue()
-                .setIfAbsent(RedisKeys.hold(scheduleId, seatNumber), String.valueOf(userId), Duration.ofSeconds(600));
+        // 3) 선점 + blocked 추가를 Lua로 원자적 실행
+        Long result = redisTemplate.execute(
+                holdSeatScript,
+                List.of(RedisKeys.hold(scheduleId, seatNumber), RedisKeys.blocked(scheduleId)),
+                String.valueOf(userId),
+                String.valueOf(seatNumber),
+                String.valueOf(HOLD_TTL_SECONDS)
+        );
 
-        // 4) 선점 redis set에 넣기
-        if (Boolean.TRUE.equals(result)){
-            redisTemplate.opsForSet().add(RedisKeys.blocked(scheduleId), String.valueOf(seatNumber));
-            return true;
-        }
-        else{ return false; }
+        // 4) 1 = 선점 성공, 0 = 이미 선점됨
+        return Long.valueOf(1).equals(result);
 
     }
 }

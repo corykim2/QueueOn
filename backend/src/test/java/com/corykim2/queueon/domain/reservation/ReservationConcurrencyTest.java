@@ -57,6 +57,9 @@ public class ReservationConcurrencyTest {
 
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    e.printStackTrace();
+                } catch (Exception e) {          // 추가
+                    e.printStackTrace();
                 } finally {
                     doneLatch.countDown();
                 }
