@@ -1,5 +1,7 @@
 package com.corykim2.queueon.domain.reservation.controller;
 
+import com.corykim2.queueon.domain.reservation.dto.ConfirmResult;
+import com.corykim2.queueon.domain.reservation.dto.ErrorResponse;
 import com.corykim2.queueon.domain.reservation.dto.SeatLayoutResponse;
 import com.corykim2.queueon.domain.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +36,24 @@ public class ReservationController {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();   // 409 이미 선점/판매
         }
+    }
+
+    //RESV-03 예매 확정
+    @PostMapping("/{seatNumber}/confirm")
+    public ResponseEntity<?> confirmSeat(
+            @PathVariable Long scheduleId,
+            @PathVariable int seatNumber,
+            @RequestHeader("X-User-Id") Long userId
+    ) {
+        ConfirmResult result = reservationService.confirmSeat(userId, scheduleId, seatNumber);
+
+        return switch (result) {
+            case CONFIRMED -> ResponseEntity.status(HttpStatus.CREATED).build();          // 201
+            case ALREADY_CONFIRMED -> ResponseEntity.ok().build();                        // 200
+            case SEAT_UNAVAILABLE -> ResponseEntity.status(HttpStatus.CONFLICT)           // 409
+                    .body(new ErrorResponse("SEAT_UNAVAILABLE", "선택 불가능한 좌석입니다."));
+            case HOLD_EXPIRED -> ResponseEntity.status(HttpStatus.CONFLICT)               // 409
+                    .body(new ErrorResponse("HOLD_EXPIRED", "선점이 만료되었습니다."));
+        };
     }
 }

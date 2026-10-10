@@ -15,13 +15,48 @@ GET http://localhost:8080/api/schedules/1/seats
 GET http://localhost:8080/api/schedules/99999/seats
 
 
+
+
 ### 좌석 선점 - 성공 (RESV-02)
-POST http://localhost:8080/api/schedules/1/seats/3/hold
+POST http://localhost:8080/api/schedules/1/seats/51/hold
 X-User-Id: 1
 
 ### 좌석 선점 - 이미 선점됨 (RESV-02)
 // 위를 한 번 더 보내거나, 다른 유저로:
-POST http://localhost:8080/api/schedules/1/seats/3/hold
+POST http://localhost:8080/api/schedules/1/seats/51/hold
 X-User-Id: 2
 // → 첫 번째 201, 두 번째 409 나오면 성공!
 // TTL hold:1:3 이걸로 ttl 체크도 가능
+
+
+
+
+### 좌석 확정 - 성공 (RESV-03)
+// 위에서 유저 1이 3번 선점한 상태에서
+POST http://localhost:8080/api/schedules/1/seats/51/confirm
+X-User-Id: 1
+// → 201
+// redis-cli에서 GET hold:1:3 → "CONFIRMED", TTL hold:1:3 → -1 (만료 없음)
+
+### 좌석 확정 - 이미 확정 (RESV-03)
+// 같은 요청을 한 번 더
+POST http://localhost:8080/api/schedules/1/seats/3/confirm
+X-User-Id: 1
+// → 200 (이미 확정은 성공 취급)
+
+### 좌석 확정 - 남의 좌석 (RESV-03)
+POST http://localhost:8080/api/schedules/1/seats/51/confirm
+X-User-Id: 2
+// → 409 { "code": "SEAT_UNAVAILABLE", ... }
+
+### 좌석 확정 - 선점 안 한 좌석 (RESV-03)
+// 4번은 아무도 선점 안 함
+POST http://localhost:8080/api/schedules/1/seats/72/confirm
+X-User-Id: 1
+// → 409 { "code": "HOLD_EXPIRED", ... }
+
+### 좌석 선점 - 확정된 좌석 (RESV-02)
+// 확정된 hold는 영구라 SET NX 실패
+POST http://localhost:8080/api/schedules/1/seats/51/hold
+X-User-Id: 2
+// → 409
