@@ -20,3 +20,6 @@ spring:
     redis:
       host: localhost
       port: ${REDIS_PORT}
+
+queue:
+  capacity: 50

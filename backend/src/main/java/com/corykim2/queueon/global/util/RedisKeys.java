@@ -15,4 +15,12 @@ public class RedisKeys {
     public static String hold(Long scheduleId, int seatNumber) {
         return "hold:" + scheduleId + ":" + seatNumber;
     }
+    //QUEUE-01
+    public static String queue(Long scheduleId) {
+        return "queue:" + scheduleId;
+    }
+    //QUEUE-01
+    public static String queueSeq(Long scheduleId) {
+        return "queue:" + scheduleId + ":seq";
+    }
 }
