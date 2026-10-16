@@ -34,8 +34,9 @@ public class Show {
     @Column(nullable = false)
     private LocalDateTime bookingOpenAt;     // 예매 오픈 시간
 
+    @Builder.Default
     @Column(nullable = false)
-    private boolean isBookable = false;       // 예매 가능 플래그 (기본 false)
+    private boolean isBookable = true;       // 예매 가능 플래그 (기본 false)
 
     @Column(nullable = false)
     private boolean isDeleted = false;    // 삭제 표시 (기본 false)

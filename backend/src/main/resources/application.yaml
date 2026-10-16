@@ -21,5 +21,6 @@ spring:
       host: localhost
       port: ${REDIS_PORT}
 
+# 대기열에서 입장 판점 범위
 queue:
   capacity: 50

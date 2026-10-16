@@ -1,0 +1,28 @@
+### 대기열 진입 - 처음 (QUEUE-01)
+POST http://localhost:8080/api/schedules/1/queue
+X-User-Id: 1
+// → 200 { status: ADMITTED, myRank: 1, aheadCount: 0, alreadyInQueue: false }
+
+### 대기열 진입 - 다른 유저 (QUEUE-01)
+POST http://localhost:8080/api/schedules/1/queue
+X-User-Id: 2
+// → 200 { myRank: 2, aheadCount: 1, alreadyInQueue: false }
+
+### 대기열 진입 - 이미 대기 중 (QUEUE-01)
+// 유저 1이 다시 누름 (rejoin 없이)
+POST http://localhost:8080/api/schedules/1/queue
+X-User-Id: 1
+// → 200 { myRank: 1, alreadyInQueue: true } (순번 그대로, 줄 안 바뀜)
+
+### 대기열 진입 - 재진입 (QUEUE-01)
+// 확인창에서 "다시 줄 서기" 선택한 경우
+POST http://localhost:8080/api/schedules/1/queue?rejoin=true
+X-User-Id: 1
+// → 200 { myRank: 2, aheadCount: 1, alreadyInQueue: false } (유저 2 뒤로)
+// redis-cli: ZRANGE queue:1 0 -1 WITHSCORES → 2, 1 순서
+
+### 대기열 진입 - 오픈 전 (QUEUE-01)
+// shows의 booking_open_at을 미래로 바꾸거나 is_bookable = 0으로 바꾼 뒤
+POST http://localhost:8080/api/schedules/1/queue
+X-User-Id: 1
+// → 403 { code: BOOKING_NOT_OPEN, ... }
