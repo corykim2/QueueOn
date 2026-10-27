@@ -1,28 +1,44 @@
 ### 대기열 진입 - 처음 (QUEUE-01)
+// 시작 전 정리: redis-cli DEL queue:1 queue:1:seq
 POST http://localhost:8080/api/schedules/1/queue
 X-User-Id: 1
-// → 200 { status: ADMITTED, myRank: 1, aheadCount: 0, alreadyInQueue: false }
+// → 200 { status: ADMITTED, rank: 0, alreadyInQueue: false }
+// 화면 표시: 순번 1번째 (rank + 1), 앞 0명 (rank)
 
 ### 대기열 진입 - 다른 유저 (QUEUE-01)
 POST http://localhost:8080/api/schedules/1/queue
 X-User-Id: 2
-// → 200 { myRank: 2, aheadCount: 1, alreadyInQueue: false }
+// → 200 { status: ADMITTED, rank: 1, alreadyInQueue: false }
 
 ### 대기열 진입 - 이미 대기 중 (QUEUE-01)
 // 유저 1이 다시 누름 (rejoin 없이)
 POST http://localhost:8080/api/schedules/1/queue
 X-User-Id: 1
-// → 200 { myRank: 1, alreadyInQueue: true } (순번 그대로, 줄 안 바뀜)
+// → 200 { status: ADMITTED, rank: 0, alreadyInQueue: true } (순번 그대로, 줄 안 바뀜)
 
 ### 대기열 진입 - 재진입 (QUEUE-01)
 // 확인창에서 "다시 줄 서기" 선택한 경우
 POST http://localhost:8080/api/schedules/1/queue?rejoin=true
 X-User-Id: 1
-// → 200 { myRank: 2, aheadCount: 1, alreadyInQueue: false } (유저 2 뒤로)
+// → 200 { status: ADMITTED, rank: 1, alreadyInQueue: false } (유저 2 뒤로)
 // redis-cli: ZRANGE queue:1 0 -1 WITHSCORES → 2, 1 순서
 
 ### 대기열 진입 - 오픈 전 (QUEUE-01)
 // shows의 booking_open_at을 미래로 바꾸거나 is_bookable = 0으로 바꾼 뒤
+// (확인 후 다시 열어두기: is_bookable = 1)
 POST http://localhost:8080/api/schedules/1/queue
 X-User-Id: 1
 // → 403 { code: BOOKING_NOT_OPEN, ... }
+
+
+
+### 대기열 순번 조회 - 대기 중 (QUEUE-02)
+// 위에서 재진입한 유저 1 (유저 2 뒤)
+GET http://localhost:8080/api/schedules/1/queue
+X-User-Id: 1
+// → 200 { status: ADMITTED, rank: 1 }
+
+### 대기열 순번 조회 - 대기열에 없음 (QUEUE-02)
+GET http://localhost:8080/api/schedules/1/queue
+X-User-Id: 999
+// → 404 { code: NOT_IN_QUEUE, ... }

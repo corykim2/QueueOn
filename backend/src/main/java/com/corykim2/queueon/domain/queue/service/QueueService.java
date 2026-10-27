@@ -1,8 +1,10 @@
 package com.corykim2.queueon.domain.queue.service;
 
 import com.corykim2.queueon.domain.queue.dto.QueueEntryResponse;
+import com.corykim2.queueon.domain.queue.dto.QueueRankResponse;
 import com.corykim2.queueon.domain.queue.dto.QueueStatus;
 import com.corykim2.queueon.domain.queue.exception.BookingNotOpenException;
+import com.corykim2.queueon.domain.queue.exception.NotInQueueException;
 import com.corykim2.queueon.domain.schedule.entity.Schedule;
 import com.corykim2.queueon.domain.schedule.repository.ScheduleRepository;
 import com.corykim2.queueon.domain.show.entity.Show;
@@ -60,9 +62,28 @@ public class QueueService {
         QueueStatus status = rank < capacity ? QueueStatus.ADMITTED : QueueStatus.WAITING;
         return new QueueEntryResponse(
                 status,          // status
-                rank + 1,        // myRank
-                rank,            // aheadCount
+                rank,       // myRank, 0부터 시작, 프론트에서 계산
                 alreadyInQueue   // alreadyInQueue
         );
+    }
+
+    // QUEUE-02 순번 조회 (폴링)
+    public QueueRankResponse getRank(Long userId, Long scheduleId) {
+        Long rank = redisTemplate.opsForZSet()
+                .rank(RedisKeys.queue(scheduleId), String.valueOf(userId));
+
+        if (rank == null) {
+            throw new NotInQueueException();
+        }
+        return new QueueRankResponse(statusOf(rank), rank);
+    }
+
+    private QueueEntryResponse toEntryResponse(long rank, boolean alreadyInQueue) {
+        return new QueueEntryResponse(statusOf(rank), rank, alreadyInQueue);
+    }
+
+    // 입장 판정: 앞 capacity명이면 입장
+    private QueueStatus statusOf(long rank) {
+        return rank < capacity ? QueueStatus.ADMITTED : QueueStatus.WAITING;
     }
 }
