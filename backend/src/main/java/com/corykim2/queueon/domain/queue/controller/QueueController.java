@@ -2,6 +2,7 @@ package com.corykim2.queueon.domain.queue.controller;
 
 import com.corykim2.queueon.domain.queue.dto.QueueEntryResponse;
 import com.corykim2.queueon.domain.queue.dto.QueueRankResponse;
+import com.corykim2.queueon.domain.queue.exception.BookingNotOpenException;
 import com.corykim2.queueon.domain.queue.exception.NotInQueueException;
 import com.corykim2.queueon.domain.queue.service.QueueService;
 import com.corykim2.queueon.domain.reservation.dto.ErrorResponse;
@@ -40,5 +41,10 @@ public class QueueController {
     public ResponseEntity<ErrorResponse> handleNotInQueue(NotInQueueException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("NOT_IN_QUEUE", e.getMessage()));
+    }
+    @ExceptionHandler(BookingNotOpenException.class)
+    public ResponseEntity<ErrorResponse> handleBookingNotOpen(BookingNotOpenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse("BOOKING_NOT_OPEN", e.getMessage()));
     }
 }
